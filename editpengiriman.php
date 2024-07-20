@@ -1,19 +1,18 @@
 
-
 <link href="tema/keranjang.css" rel="stylesheet" type="text/css">
 <script src="jquery-1-10-1.min.js"></script>
-<? 
-if(empty($_SESSION[email]) || empty($_SESSION[pass])){
-echo "<script>window.alert('Silahkan Login Lebih Dahulu');
+<?php 
+if(empty($_SESSION['email']) || empty($_SESSION['pass'])){
+    echo "<script>window.alert('Silahkan Login Lebih Dahulu');
         window.location=('index.php?l=lihat&aksi=login&cek=cek')</script>";
 
 }else{
 ?>
-  <? 
+  <?php 
   
-    $editktp = mysql_query("SELECT * FROM kustomer,kota
-									   WHERE kota.id_kota=kustomer.id_kota AND kustomer.id_kustomer=$_SESSION[kustomer]");
-    $rk    = mysql_fetch_array($editktp);
+    $editktp = mysqli_query($koneksi, "SELECT * FROM kustomer,kota
+									   WHERE kota.id_kota=kustomer.id_kota AND kustomer.id_kustomer=$_SESSION['kustomer']");
+    $rk    = mysqli_fetch_array($editktp);
 	?>
 <link rel="stylesheet" href="loginmember/registrasi_files/formoid1/formoid-metro-cyan.css" type="text/css" />
 <script type="text/javascript" src="loginmember/registrasi_files/formoid1/jquery.min.js"></script>
@@ -27,11 +26,11 @@ echo "<script>window.alert('Silahkan Login Lebih Dahulu');
 	<select id="provinsi" name="provinsi">
 
 			<option value="" >-= Pilih Provinsi =-</option>
-			<option value="<?=$rk[kabupaten]?>" selected ><?=$rk[kabupaten]?></option>
+			<option value="<?=$rk['kabupaten']?>" selected ><?=$rk['kabupaten']?></option>
 			<?php
 
-				$sql_prov =mysql_query("SELECT * FROM kota group by kabupaten ORDER by kabupaten ASC");
-				while ( $r = mysql_fetch_array($sql_prov) ){ 
+				$sql_prov = mysqli_query($koneksi, "SELECT * FROM kota group by kabupaten ORDER by kabupaten ASC");
+				while ( $r = mysqli_fetch_array($sql_prov) ){ 
 
 			?>
 					<option value="<?php echo $r['kabupaten']; ?>"> <?php echo $r['kabupaten']; ?> </option>
@@ -39,18 +38,18 @@ echo "<script>window.alert('Silahkan Login Lebih Dahulu');
 			<?php } /* end while */	?>
 
 		</select>
-		<input  type="hidden"  name="KC" value="<?=$rk[id_kota]?>">
+		<input  type="hidden"  name="KC" value="<?=$rk['id_kota']?>">
 	
 <label class="subtitle">&nbsp;</label></span><label class="">Pilih Kabupaten/Kota</label>
 	<select id="kota" name="kota">
-	<option value="<?=$rk[nama_kota]?>" selected ><?=$rk[nama_kota]?></option>
+	<option value="<?=$rk['nama_kota']?>" selected ><?=$rk['nama_kota']?></option>
 			<option value="" >-= Pilih Kabupaten/Kota =-</option>
 			
 		</select>
 
 <label class="subtitle">&nbsp;</label></span><label class="">Kecamatan Pengiriman</label>
 	<select id="kec" name="KC">
-<option value="<?=$rk[id_kota]?>" selected ><?=$rk[kel]?></option>
+<option value="<?=$rk['id_kota']?>" selected ><?=$rk['kel']?></option>
 			<option value="" >-= Pilih Kecamatan =-</option>
 			
 		</select>
@@ -61,16 +60,16 @@ echo "<script>window.alert('Silahkan Login Lebih Dahulu');
 
 <label class="subtitle">&nbsp;</label></span>
 <label class="">Alamat Lengkap Desa/Kelurahan Rt/RW*</label>
-<textarea  id='editor1' name='DESO' class='smallInput wide' rows='7' cols='30'><?=$rk[ndeso]?></textarea>
+<textarea  id='editor1' name='DESO' class='smallInput wide' rows='7' cols='30'><?=$rk['ndeso']?></textarea>
 
 
 <label class="subtitle">&nbsp;</label></span>
 <label class="">Kode Pos*</label>
-<input class="large" type="text" name="POS" maxlength="7" value="<?=$rk[kd_pos]?>" onKeyUp="this.value=this.value.replace(/[^0-9]/g,'')" required/>
+<input class="large" type="text" name="POS" maxlength="7" value="<?=$rk['kd_pos']?>" onKeyUp="this.value=this.value.replace(/[^0-9]/g,'')" required/>
 
 <label class="subtitle">&nbsp;</label></span>
 <label class="">Alamat Alternatif</label>
-<input  class="large" type="text" name="ALMT" value="<?=$rk[alm_alt]?>" />
+<input  class="large" type="text" name="ALMT" value="<?=$rk['alm_alt']?>" />
 </div>
 <i></i>
 <label class="subtitle">&nbsp;</label>
@@ -116,4 +115,4 @@ echo "<script>window.alert('Silahkan Login Lebih Dahulu');
 	</script>
 
 <script type="text/javascript" src="loginmember/registrasi_files/formoid1/formoid-metro-cyan.js"></script>
-<? }?>
+<?php }?>

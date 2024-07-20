@@ -1,5 +1,5 @@
-<? include "config/koneksi.php";
-$cek_email=mysql_num_rows(mysql_query("SELECT email FROM kustomer WHERE email='$_POST[email]'"));
+<?php include "config/koneksi.php";
+$cek_email=mysqli_num_rows(mysql_query($koneksi, "SELECT email FROM kustomer WHERE email='$_POST[email]'"));
 // Kalau email tidak ditemukan
 if ($cek_email == 0){
   echo "<script>window.alert('$_POST[email] tidak terdaftar di database kami.');

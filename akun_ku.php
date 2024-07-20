@@ -1,5 +1,4 @@
 
-
 <link href="tema/keranjang.css" rel="stylesheet" type="text/css">
 <script src="jquery-1-10-1.min.js"></script>
 <div class='keranjang'>
@@ -12,25 +11,25 @@
    <th width="20%">Total</th>
    
   </tr>
-  <?
+  <?php
 $no=1;
-  while($r=mysql_fetch_array($sql)){
-    $disc        = ($r[diskon]/100)*$r[harga];
-    $hargadisc   = number_format(($r[harga]-$disc),0,",",".");
+  while($r=mysqli_fetch_array($sql)){
+    $disc        = ($r['diskon']/100)*$r['harga'];
+    $hargadisc   = number_format(($r['harga']-$disc),0,",",".");
 
-    $subtotal    = ($r[harga]-$disc) * $r[jumlah];
+    $subtotal    = ($r['harga']-$disc) * $r['jumlah'];
     $total       = $total + $subtotal;  
     $subtotal_rp = format_rupiah($subtotal);
     $total_rp    = format_rupiah($total);
-    $harga       = format_rupiah($r[harga]);
-    if($r[best]=='Y'){$wr='#FFCC99';}else{$wr='#CCCCCC';}
+    $harga       = format_rupiah($r['harga']);
+    if($r['best']=='Y'){$wr='#FFCC99';}else{$wr='#CCCCCC';}
     echo "
   <tr>
     <input type=hidden name='id[$no]' value='$r[id_orders_temp]'>
     <td><img src=foto/foto_produk/$r[gambar] width='150' ></td>
     <td>
 	<div class='NM'>$r[nama_produk]</div>";
-	if($r[diskon]!=0){echo"
+	if($r['diskon']!=0){echo"
 	<div class='HG'>Harga Satuan : <strong>Rp.$harga</strong></div>
 	<div class='HG'>Diskon <b>$r[diskon]%</b></div>";
 	}else{echo"<div class='HG'>Harga Satuan : <strong>Rp.$harga</strong></div>";}
@@ -49,26 +48,26 @@ $no=1;
     </tr>
 </table>
 </div>
-<? 
-if(empty($_SESSION[email]) || empty($_SESSION[pass])){
+<?php 
+if(empty($_SESSION['email']) || empty($_SESSION['pass'])){
 echo "<script>window.alert('Silahkan Login Lebih Dahulu');
         window.location=('index.php?l=lihat&aksi=login&cek=cek')</script>";
 
 }else{
 ?>
-  <? 
- $editkt  = mysql_query("SELECT * FROM orders,
+  <?php 
+ $editkt  = mysqli_query($koneksi, "SELECT * FROM orders,
 									   kustomer,
 									   kota
 									   WHERE kota.id_kota= kustomer.id_kota AND orders.id_kustomer=kustomer.id_kustomer AND kustomer.id_kustomer=$_SESSION[kustomer] ");
     
-    $rk    = mysql_fetch_array($editkt);
+    $rk    = mysqli_fetch_array($editkt);
 	?>
-  <? 
+  <?php 
   
-    $editktp = mysql_query("SELECT * FROM kustomer
+    $editktp = mysqli_query($koneksi, "SELECT * FROM kustomer
 									   WHERE kustomer.id_kustomer=$_SESSION[kustomer]");
-    $rkp    = mysql_fetch_array($editktp);
+    $rkp    = mysqli_fetch_array($editktp);
 	?>
 <link rel="stylesheet" href="loginmember/registrasi_files/formoid1/formoid-metro-cyan.css" type="text/css" />
 <script type="text/javascript" src="loginmember/registrasi_files/formoid1/jquery.min.js"></script>
@@ -101,8 +100,8 @@ echo "<script>window.alert('Silahkan Login Lebih Dahulu');
 			<option value="<?=$rk[kabupaten]?>" selected ><?=$rk[kabupaten]?></option>
 			<?php
 
-				$sql_prov =mysql_query("SELECT * FROM kota group by kabupaten ORDER by kabupaten ASC");
-				while ( $r = mysql_fetch_array($sql_prov) ){ 
+				$sql_prov =mysqli_query($koneksi, "SELECT * FROM kota group by kabupaten ORDER by kabupaten ASC");
+				while ( $r = mysqli_fetch_array($sql_prov) ){ 
 
 			?>
 					<option value="<?php echo $r['kabupaten']; ?>"> <?php echo $r['kabupaten']; ?> </option>
@@ -182,9 +181,9 @@ echo "<script>window.alert('Silahkan Login Lebih Dahulu');
 	<label class="title">Tranfer Ke Bank<span >*</span></label><div class="large"><span>
 	<select name="bank" >
    
-	  <?
-      $bank=mysql_query("SELECT * FROM bank ORDER BY id_bank ASC");
-      while($BK=mysql_fetch_array($bank)){
+	  <?php
+      $bank=mysqli_query($koneksi, "SELECT * FROM bank ORDER BY id_bank ASC");
+      while($BK=mysqli_fetch_array($bank)){
          echo "<option value='$BK[id_bank]'>$BK[nm_bank]</option>";
       }?>
 	</select>
@@ -236,4 +235,4 @@ echo "<script>window.alert('Silahkan Login Lebih Dahulu');
  }
 </script>
 <script type="text/javascript" src="loginmember/registrasi_files/formoid1/formoid-metro-cyan.js"></script>
-<? }?>
+<?php }?>

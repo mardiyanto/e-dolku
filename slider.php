@@ -29,26 +29,27 @@
 
 					<div class="details">
 					
-					<? $kat5=mysql_query("SELECT * FROM produk WHERE diskon	!='0' ORDER BY id_produk DESC LIMIT 8");
- while ($r=mysql_fetch_array($kat5)){ 
-				include "diskon_stok.php";
-  ?>
+					<?php 
+					$kat5 = mysqli_query($koneksi, "SELECT * FROM produk WHERE diskon != '0' ORDER BY id_produk DESC LIMIT 8");
+					while ($r = mysqli_fetch_array($kat5)){ 
+						include "diskon_stok.php";
+					?>
 					
 						<div class="detail">
 						<div class="cardus">
 						
-						<div class="potongan"><?=$r[diskon]?>%</div>
-						<a href='index.php?l=lihat&aksi=detail&id_p=<?=$r[id_produk]?>'><img src='foto/foto_produk/<?=$r[gambar]?>' alt='' width="153"   height=150 /></a>
+						<div class="potongan"><?= $r['diskon'] ?>%</div>
+						<a href='index.php?l=lihat&aksi=detail&id_p=<?= $r['id_produk'] ?>'><img src='foto/foto_produk/<?= $r['gambar'] ?>' alt='' width="153" height=150 /></a>
 						
 						
 							</div>
-						<div class="Nm_p"><?=$r[nama_produk]?></div>
+						<div class="Nm_p"><?= $r['nama_produk'] ?></div>
 						<div class="Pr">
 						
-						<?=$divharga?>%</div>
+						<?= $divharga ?>%</div>
 						</div><!-- /detail -->
 						
-						<? }?>
+						<?php }?>
 						
 					
 					</div><!-- /details -->
@@ -72,19 +73,20 @@
 			</div><!-- /panel -->
 	
 			<div class="backgrounds">
-				<? $kat4=mysql_query("SELECT * FROM produk WHERE diskon='0' ORDER BY id_produk DESC LIMIT 4");
- while ($r=mysql_fetch_array($kat4)){ 
-  $harga = number_format($r[harga],0,",",".");
- ?>
+				<?php 
+				$kat4 = mysqli_query($koneksi, "SELECT * FROM produk WHERE diskon = '0' ORDER BY id_produk DESC LIMIT 4");
+				while ($r = mysqli_fetch_array($kat4)){ 
+					$harga = number_format($r['harga'], 0, ",", ".");
+				?>
 				<div class='item item_1'>
-			<div class="Nm"><?=$r[nama_produk]?></div>
-			<div class="Hg">Rp. <?=$harga?></div>
+			<div class="Nm"><?= $r['nama_produk'] ?></div>
+			<div class="Hg">Rp. <?= $harga ?></div>
 	
-					<a href='index.php?l=lihat&aksi=detail&id_p=<?=$r[id_produk]?>'><img src='foto/foto_produk/<?=$r[gambar]?>' alt='' width="365"   height=340/>		
+					<a href='index.php?l=lihat&aksi=detail&id_p=<?= $r['id_produk'] ?>'><img src='foto/foto_produk/<?= $r['gambar'] ?>' alt='' width="365" height=340/>		
 					</a>
 				</div>
 				<!-- /item -->
-				<? }?>
+				<?php }?>
 				
 			</div><!-- /backgrounds -->
 			

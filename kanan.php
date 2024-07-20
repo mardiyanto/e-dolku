@@ -5,20 +5,20 @@
     			<ul> <li><h2 style="margin-bottom: 7px;">Keranjang Belanja</h2>
     			<?php require_once "item.php";?>
 				<div id="google_translate_element"><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script></div>
-<? if( $_SESSION[kustomer]==''){?>
+<?php if( $_SESSION['kustomer']==''){?>
 
- <? }else{?>
- <? 
-$order=mysql_query(" SELECT COUNT(id_kustomer) as Od  FROM orders WHERE id_kustomer=$_SESSION[kustomer] ");
-$Od=mysql_fetch_array($order);
+ <?php }else{?>
+ <?php 
+$order=mysqli_query($koneksi, "SELECT COUNT(id_kustomer) as Od  FROM orders WHERE id_kustomer=$_SESSION['kustomer']");
+$Od=mysqli_fetch_array($order);
 		?>
- <li><a href='index.php?l=lihat&aksi=pesanansaya'>Pesanan Saya <b>(<?=$Od[Od]?>)</b></a></li> 
+ <li><a href='index.php?l=lihat&aksi=pesanansaya'>Pesanan Saya <b>(<?=$Od['Od']?>)</b></a></li> 
 
  <li><a href='index.php?l=lihat&aksi=editpengiriman'> Edit Pengiriman</a></li>
 <li><a href='index.php?l=lihat&aksi=gantilogin'> Edit Paswd</a></li>
  <li><a class="off" href='logout.php'>Keluar</a></li>
 	
- <? }?>
+ <?php }?>
 
     			</li>
     			</ul>
@@ -28,13 +28,13 @@ $Od=mysql_fetch_array($order);
 <li id="text-2" class="widget widget_text"><h2 class="widgettitle">Kategori</h2><ul>			
 				<?php
 			  
-            $kategori=mysql_query("select nama_kategori, kategori.id_kategori,  
+            $kategori=mysqli_query($koneksi, "select nama_kategori, kategori.id_kategori,  
                                   count(produk.id_produk) as jml 
                                   from kategori left join produk 
                                   on produk.id_kategori=kategori.id_kategori 
                                   group by nama_kategori");
           
-            while($k=mysql_fetch_array($kategori)){
+            while($k=mysqli_fetch_array($kategori)){
             echo"
 			<li><a href='index.php?l=lihat&aksi=kategori&id_k=$k[id_kategori]'> $k[nama_kategori] ($k[jml])</a></li>
 			";
@@ -47,9 +47,9 @@ $Od=mysql_fetch_array($order);
 		<li id="recent-posts-2" class="widget widget_recent_entries">		
 		<h2 class="widgettitle">Sering Di beli</h2><ul>
 <?php
-      $best=mysql_query("SELECT * FROM produk ORDER BY dibeli DESC LIMIT 3");
-      while($a=mysql_fetch_array($best)){
-        $harga = format_rupiah($a[harga]);
+      $best=mysqli_query($koneksi, "SELECT * FROM produk ORDER BY dibeli DESC LIMIT 3");
+      while($a=mysqli_fetch_array($best)){
+        $harga = format_rupiah($a['harga']);
 		    echo "<li>
 <a href='#'><img width='60' height='60' src='foto/foto_produk/$a[gambar]' class='alignleft popular-sidebar wp-post-image' alt='isi' /></a>
 <span style='padding-top:0px;float:left; width:185px;'>
@@ -63,31 +63,31 @@ $Od=mysql_fetch_array($order);
 				</ul>
 		</li>
 		<li id="archives-2" class="widget widget_archive"><h2 class="widgettitle">Statistik User</h2>		<ul>
-        	              <?
+        	              <?php
 $ip      = $_SERVER['REMOTE_ADDR']; // Mendapatkan IP komputer user
 $tanggal = date("Ymd"); // Mendapatkan tanggal sekarang
 $waktu   = time(); // 
 
 // Mencek berdasarkan IPnya, apakah user sudah pernah mengakses hari ini 
-$s = mysql_query("SELECT * FROM statistik WHERE ip='$ip' AND tanggal='$tanggal'");
+$s = mysqli_query($koneksi, "SELECT * FROM statistik WHERE ip='$ip' AND tanggal='$tanggal'");
 // Kalau belum ada, simpan data user tersebut ke database
-if(mysql_num_rows($s) == 0){
-  mysql_query("INSERT INTO statistik(ip, tanggal, hits, online) VALUES('$ip','$tanggal','1','$waktu')");
+if(mysqli_num_rows($s) == 0){
+  mysqli_query($koneksi, "INSERT INTO statistik(ip, tanggal, hits, online) VALUES('$ip','$tanggal','1','$waktu')");
 } 
 else{
-  mysql_query("UPDATE statistik SET hits=hits+1, online='$waktu' WHERE ip='$ip' AND tanggal='$tanggal'");
+  mysqli_query($koneksi, "UPDATE statistik SET hits=hits+1, online='$waktu' WHERE ip='$ip' AND tanggal='$tanggal'");
 }
 
-$pengunjung       = mysql_num_rows(mysql_query("SELECT * FROM statistik WHERE tanggal='$tanggal' GROUP BY ip"));
-$totalpengunjung  = mysql_result(mysql_query("SELECT COUNT(hits) FROM statistik"), 0); 
-$hits             = mysql_fetch_assoc(mysql_query("SELECT SUM(hits) as hitstoday FROM statistik WHERE tanggal='$tanggal' GROUP BY tanggal")); 
-$totalhits        = mysql_result(mysql_query("SELECT SUM(hits) FROM statistik"), 0); 
-$tothitsgbr       = mysql_result(mysql_query("SELECT SUM(hits) FROM statistik"), 0); 
+$pengunjung       = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM statistik WHERE tanggal='$tanggal' GROUP BY ip"));
+$totalpengunjung  = mysqli_fetch_array(mysqli_query($koneksi, "SELECT COUNT(hits) FROM statistik"))[0]; 
+$hits             = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT SUM(hits) as hitstoday FROM statistik WHERE tanggal='$tanggal' GROUP BY tanggal")); 
+$totalhits        = mysqli_fetch_array(mysqli_query($koneksi, "SELECT SUM(hits) FROM statistik"))[0]; 
+$tothitsgbr       = mysqli_fetch_array(mysqli_query($koneksi, "SELECT SUM(hits) FROM statistik"))[0]; 
 $bataswaktu       = time() - 300;
-$pengunjungonline = mysql_num_rows(mysql_query("SELECT * FROM statistik WHERE online > '$bataswaktu'"));
+$pengunjungonline = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM statistik WHERE online > '$bataswaktu'"));
 $a=number_format($pengunjung,0,",",".");
 $b=number_format($totalpengunjung,0,",",".");
-$c=number_format($hits[hitstoday],0,",",".");
+$c=number_format($hits['hitstoday'],0,",",".");
 $d=number_format($totalhits,0,",",".");
 $e=number_format($pengunjungonline,0,",",".");
 
@@ -163,4 +163,3 @@ echo "
 				
 			</div>
 </div>
-		

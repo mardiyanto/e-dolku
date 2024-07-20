@@ -7,16 +7,19 @@
   include "config/library.php";
   include "config/fungsi_autolink.php";
   include "config/fungsi_rupiah.php";
-  $aksi=$_GET[aksi];
+  $aksi=$_GET['aksi'];
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title><? if(empty($_GET[nama]))
-{
-	echo"Selamat Datang Ditoko $k_k[nama_perusahaan]";
-}else{
-	echo"$_GET[nama]";}?></title>
+<title><?php
+if (empty($_GET['nama'])) {
+    echo "Selamat Datang di Toko " . htmlspecialchars($k_k['nama_perusahaan']);
+} else {
+    echo htmlspecialchars($_GET['nama']);
+}
+?>
+</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,10 +27,9 @@
 <link rel="stylesheet" href="bootstrap4/bootstrap.min.css">
 
 <link rel="stylesheet" href="bootstrap4/produk.css" type="text/css" media="screen">
- <link rel="stylesheet" href="bootstrap4/icon/font/css/font-awesome.min.css">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="bootstrap4/icon/ionicons.min.css">
-<script src="bootstrap4/js/jquery-3.3.1.slim.min.js" ></script>
+<link rel="stylesheet" href="bootstrap4/icon/font/css/font-awesome.min.css">
+<link rel="stylesheet" href="bootstrap4/icon/ionicons.min.css">
+<script src="bootstrap4/js/jquery-3.3.1.slim.min.js"></script>
 <script src="bootstrap4/js/popper.min.js"></script>
 <script src="bootstrap4/js/bootstrap.min.js"></script>
 </head>
@@ -75,22 +77,22 @@
           <i class="fa fa-file-text fa-lg"></i> Profil Kami
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		<? $profil=mysql_query("SELECT * FROM profil ");
-while($p=mysql_fetch_array($profil)){
+		<?php $profil=mysqli_query($koneksi, "SELECT * FROM profil ");
+while($p=mysqli_fetch_array($profil)){
 ?>
 								<a class="dropdown-item" href="?l=lihat&aksi=profil&id_p=<?=$p[id_profil]?>"><?=$p[nama]?></a>
-                               <? }?>
+                               <?php }?>
 							   <a class="dropdown-item" href='index.php?l=lihat&aksi=kontak'>Kontak Kami </a>
         </div>
       </li>
-	  <? if( $_SESSION[kustomer]==''){?>
+	  <?php if( $_SESSION[kustomer]==''){?>
     <li class="nav-item">
         <a style="color: #fffdfc" class="nav-link" href="index.php?l=lihat&aksi=login&cek=cek"><i class="fa fa-users fa-lg"></i> Member</a>
       </li>
- <? }else{?>
- <? 
-$order=mysql_query(" SELECT COUNT(id_kustomer) as Od  FROM orders WHERE id_kustomer=$_SESSION[kustomer] ");
-$Od=mysql_fetch_array($order);
+ <?php }else{?>
+ <?php 
+$order=mysqli_query($koneksi, "SELECT COUNT(id_kustomer) as Od  FROM orders WHERE id_kustomer=$_SESSION[kustomer] ");
+$Od=mysqli_fetch_array($order);
 		?>
 		  <li class="nav-item dropdown">
         <a style="color: #fffdfc" class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -105,7 +107,7 @@ $Od=mysql_fetch_array($order);
         </div>
       </li>	
 	
- <? }?>
+ <?php }?>
       <li class="nav-item">
         <a style="color: #fffdfc" class="nav-link" href="?l=lihat&aksi=testi"><i class="fa fa-file-text fa-lg"></i> Testimoni</a>
       </li>
@@ -115,7 +117,7 @@ $Od=mysql_fetch_array($order);
   </div>
   <section id="mainContent">
   
-  				<? if($_GET[l]=='lihat'){include"utama.php";}
+  				<?php if($_GET[l]=='lihat'){include"utama.php";}
 			   else{include"tengah.php";}
 			?>
 	
@@ -143,11 +145,11 @@ $Od=mysql_fetch_array($order);
             <a style="color:#fffdfc;" href="index.php?l=lihat&aksi=kranjang" class="nav-link text-center">
          <i class="fa fa-fw fa-shopping-cart"></i><?php
 	$sid = session_id();
-	$sql = mysql_query("SELECT SUM(jumlah*(harga-(diskon/100)*harga)) as total,SUM(jumlah) as totaljumlah FROM orders_temp, produk 
+	$sql = mysqli_query($koneksi, "SELECT SUM(jumlah*(harga-(diskon/100)*harga)) as total,SUM(jumlah) as totaljumlah FROM orders_temp, produk 
 			                WHERE id_session='$sid' AND orders_temp.id_produk=produk.id_produk");
     //$disc        = ($r[diskon]/100)*$r[harga];
     //$subtotal    = ($r[harga]-$disc) * $r[jumlah];                
-	while($r=mysql_fetch_array($sql)){
+	while($r=mysqli_fetch_array($sql)){
   if ($r['totaljumlah'] != ""){
     $total_rp    = format_rupiah($r['total']);    
     echo " <span class='badge badge-light'>$r[totaljumlah]</span>
@@ -162,17 +164,17 @@ $Od=mysql_fetch_array($order);
                 <span class="small d-block">Keranjang</span>
             </a>
         </li>
-			  <? if( $_SESSION[kustomer]==''){?>
+			  <?php if( $_SESSION[kustomer]==''){?>
 			  	<li class="nav-item">
             <a style="color:#fffdfc;" href="index.php?l=lihat&aksi=login&cek=cek" class="nav-link text-center">
          <i class="fa fa-fw fa-sign-in"></i>
                 <span class="small d-block">Login</span>
             </a>
         </li> 
- <? }else{?>
- <? 
-$order=mysql_query(" SELECT COUNT(id_kustomer) as Od  FROM orders WHERE id_kustomer=$_SESSION[kustomer] ");
-$Od=mysql_fetch_array($order);
+ <?php }else{?>
+ <?php 
+$order=mysqli_query($koneksi, "SELECT COUNT(id_kustomer) as Od  FROM orders WHERE id_kustomer=$_SESSION[kustomer] ");
+$Od=mysqli_fetch_array($order);
 		?>
      <li class="nav-item dropup">
             <a style="color:#fffdfc;" href="#" class="nav-link text-center" role="button" id="dropdownMenuProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
@@ -187,7 +189,7 @@ $Od=mysql_fetch_array($order);
                 <a class="dropdown-item" href="logout.php">Logout</a>
             </div>
         </li>		
- <? }?>
+ <?php }?>
 	
 		
    

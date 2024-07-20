@@ -28,31 +28,26 @@ $ko(document).ready(function() {
     </ul>
   </div>
   <div class="card-body tab_content" id="tab2">
-    <? include"komentar.php"; ?>
+    <?php include "komentar.php"; ?>
   </div>
-    <div class="tab_content" id="tab3">
-   <?
- $sql=mysql_query("SELECT * FROM produk ORDER BY id_produk DESC LIMIT 6"); 
-  while ($r=mysql_fetch_array($sql)){
-
-  include "diskon_stok.php";
-
-echo"
-<div class='product-info'>
- <a href='index.php?l=lihat&aksi=detail&id_p=$r[id_produk]'>
-<center><img src='foto/foto_produk/$r[gambar]'  title='Lihat $r[nama_produk]' /></center>
-</a>
-";
-     if ($d!=0){echo"
-            <div class='diskon'> $r[diskon]% </div>";
-    }else{echo"";
+  <div class="tab_content" id="tab3">
+    <?php
+    $sql = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id_produk DESC LIMIT 6"); 
+    while ($r = mysqli_fetch_array($sql)) {
+        include "diskon_stok.php";
+        echo "
+        <div class='product-info'>
+          <a href='index.php?l=lihat&aksi=detail&id_p={$r['id_produk']}'>
+            <center><img src='foto/foto_produk/{$r['gambar']}' title='Lihat {$r['nama_produk']}' /></center>
+          </a>";
+        if ($d != 0) {
+            echo "<div class='diskon'> {$r['diskon']}% </div>";
+        }
+        echo "
+          <div class='nama_p_besar'>{$r['nama_produk']}</div>
+          $divharga
+        </div>";
     }
-            echo"
-          
-		   <div class='nama_p_besar'>$r[nama_produk]</div>
-         $divharga
-</div>";
- }
-?>
+    ?>
   </div>
 </div>

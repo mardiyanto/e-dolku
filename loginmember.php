@@ -3,11 +3,11 @@
 
   </div>  
  <div class='card-body'>
-  <form class="form-container" method="post" action="log.php?aksi=login&cek=<?=$_GET[cek]?>">
+  <form class="form-container" method="post" action="log.php?aksi=login&cek=<?= $_GET['cek'] ?>">
 
 <div class="form-title"><h2>Login Akun</h2></div>
 <div class="form-title">Email</div>
-<input class="form-field" type='email'name='email'  required="required" placeholder='Masukan Email' /><br />
+<input class="form-field" type='email' name='email'  required="required" placeholder='Masukan Email' /><br />
 
 <div class="form-title">Password</div>
 	<input type='password' class="form-field" name='password' placeholder='Masukan Password' required>
@@ -17,7 +17,7 @@
 </div>
 </form><br />
 
-   <form class="form-container" method="post" action="log.php?aksi=daftarmember&cek=<?=$_GET[cek]?>">
+   <form class="form-container" method="post" action="log.php?aksi=daftarmember&cek=<?= $_GET['cek'] ?>">
 <div class="form-title"><h2>Daftar Akun Baru</h2></div>
 
 <div class="form-title">Nama Lengkap</div>
@@ -45,7 +45,6 @@ Lakukan Pembayaran Tamu ??
 <a href='index.php?l=lihat&aksi=pembayaran_tamu'>KLIK DISINI</a>
 </div>
 	</div>	</div>
-
 
 
 
