@@ -6,7 +6,7 @@
 							<div class="pull-left image">
 								<div align="center">
                             	<img src="img/avatar4.png" class="img-circle" alt="User Image" /><br>
-								<p>Hello, <?=$_SESSION[nama]?></p>
+								<p>Hello, <?= $_SESSION['nama'] ?></p>
 								</div>
                        		 </div>
                             <!-- /input-group -->
@@ -25,13 +25,12 @@
 						<li><a href="?aksi=kontak"><i class="fa  fa-qrcode fa-fw"></i> Tentang Kami<span class="fa arrow"></span></a>
 							<ul class="nav nav-second-level">
 							
-								<? $profil=mysql_query("SELECT * FROM profil ");
-while($p=mysql_fetch_array($profil)){
-?>
-	
-							
-								<li><a href="?aksi=editprofil&id_p=<?=$p[id_profil]?>"><i class="fa fa-angle-double-right"></i><?=$p[nama]?></a></li>
-                               <? }?>
+								<?php 
+								$profil = mysqli_query($koneksi, "SELECT * FROM profil");
+								while($p = mysqli_fetch_assoc($profil)) {
+								?>
+								<li><a href="?aksi=editprofil&id_p=<?= $p['id_profil'] ?>"><i class="fa fa-angle-double-right"></i><?= $p['nama'] ?></a></li>
+                                <?php } ?>
 							   <li><a href="?aksi=kontak&id=1"><i class="fa fa-angle-double-right"></i> Kontak Kami</a></li>
                             </ul>
 						</li>

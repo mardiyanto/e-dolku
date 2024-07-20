@@ -1,12 +1,12 @@
-<?
+<?php
 include "../config/timeout.php";
-if($_SESSION[login]==1){
-	if(!cek_login()){
-		$_SESSION[login] = 0;
-	}
+if($_SESSION['login']==1){
+    if(!cek_login()){
+        $_SESSION['login'] = 0;
+    }
 }
 
-if($_SESSION[login]==0){
+if($_SESSION['login']==0){
   header('location:logout.php');
 }
 else{
@@ -15,11 +15,11 @@ if (empty($_SESSION['user']) AND empty($_SESSION['pass']) AND $_SESSION['login']
 }
 else{
     include "../config/koneksi.php";
-	include "../config/class_paging.php";
-	include "../config/fungsi_rupiah.php";
-	include "file.php";
+    include "../config/class_paging.php";
+    include "../config/fungsi_rupiah.php";
+    include "file.php";
     include "conter.php";
-    $aksi=$_GET[aksi];
+    $aksi=$_GET['aksi'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -41,16 +41,16 @@ else{
 <link href="css/dataTables.bootstrap.css" rel="stylesheet">
     <!-- SB Admin CSS - Include with every page -->
 
-	<!-- Page-Level Plugin Scripts - data Table -->
+    <!-- Page-Level Plugin Scripts - data Table -->
     <script src="js/plugins/dataTables/jquery.dataTables.js"></script>
     <script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
     <!-- Page-Level Demo Scripts - Forms - Use for reference -->
-	    <script src="../ckeditor/ckeditor.js"></script>
+        <script src="../ckeditor/ckeditor.js"></script>
         <script type="text/javascript">
-		 <!-- data tabel -->
-		    $(document).ready(function() {
-        	$('#style1').dataTable();
-    		});
+         <!-- data tabel -->
+            $(document).ready(function() {
+            $('#style1').dataTable();
+            });
         </script>
 </head>
 <body >
@@ -62,7 +62,7 @@ else{
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+        <span the="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">ADMIN PANEL</a>
     </div>
@@ -70,45 +70,45 @@ else{
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li ><a href="?aksi=home"><i class="fa fa-dashboard fa-fw"></i> Beranda</a></a></li>						
+        <li ><a href="?aksi=home"><i class="fa fa-dashboard fa-fw"></i> Beranda</a></a></li>                     
 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart-o fa-fw"></i> Produk<b class="caret"></b><span class="fa arrow"></span></a>
     <ul class="dropdown-menu">
-	<li><a href="?aksi=kategori"><i class="fa fa-angle-double-right"></i> Data Kategori</a></li>
+    <li><a href="?aksi=kategori"><i class="fa fa-angle-double-right"></i> Data Kategori</a></li>
     <li><a href="?aksi=barang"><i class="fa fa-angle-double-right"></i> Data Barang</a></li>
     </ul>
 </li>
 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa  fa-qrcode fa-fw"></i> Tentang Kami<b class="caret"></b><span class="fa arrow"></span></a>
-							<ul class="dropdown-menu">
-								<? $profil=mysql_query("SELECT * FROM profil ");
-while($p=mysql_fetch_array($profil)){?>
-								<li><a href="?aksi=editprofil&id_p=<?=$p[id_profil]?>"><i class="fa fa-angle-double-right"></i><?=$p[nama]?></a></li>
-                               <? }?>
-							   <li><a href="?aksi=kontak&id=1"><i class="fa fa-angle-double-right"></i> Kontak Kami</a></li>
-							    <li><a href="?aksi=kontak"><i class="fa fa-angle-double-right"></i> Tentang Kami</a></li>
+                            <ul class="dropdown-menu">
+                                <?php $profil=mysqli_query($koneksi, "SELECT * FROM profil ");
+while($p=mysqli_fetch_array($profil)){?>
+                                <li><a href="?aksi=editprofil&id_p=<?=$p['id_profil']?>"><i class="fa fa-angle-double-right"></i><?=$p['nama']?></a></li>
+                               <?php }?>
+                               <li><a href="?aksi=kontak&id=1"><i class="fa fa-angle-double-right"></i> Kontak Kami</a></li>
+                                <li><a href="?aksi=kontak"><i class="fa fa-angle-double-right"></i> Tentang Kami</a></li>
                             </ul>
 </li>
 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-cart fa-fw"></i> Orders<b class="caret"></b><span class="fa arrow"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="?aksi=dataorder"><i class="fa fa-angle-double-right"></i> Data Orders</a></li>
+                            <ul class="dropdown-menu">
+                                <li><a href="?aksi=dataorder"><i class="fa fa-angle-double-right"></i> Data Orders</a></li>
                                 <li><a href="?aksi=konfirmasi"><i class="fa fa-angle-double-right"></i> Konfirmasi Pembayaran</a></li>
-								 <li><a href="?aksi=laporan"><i class="fa fa-angle-double-right"></i> Laporan Penjualan</a></li>
+                                 <li><a href="?aksi=laporan"><i class="fa fa-angle-double-right"></i> Laporan Penjualan</a></li>
                             </ul>
 </li>
-	<li class="dropdown">
+    <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
          <i class="fa fa-male fa-fw"></i> Data Kustomers<b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
-		  <li><a href="?aksi=member"><i class="fa fa-angle-double-right"></i>  Data Kustomers</a></li>
-		  <li><a href="?aksi=kota"><i class="fa fa-angle-double-right"></i> Data Kota Pengiriman</a></li>
+          <li><a href="?aksi=member"><i class="fa fa-angle-double-right"></i>  Data Kustomers</a></li>
+          <li><a href="?aksi=kota"><i class="fa fa-angle-double-right"></i> Data Kota Pengiriman</a></li>
           <li><a href="?aksi=bank"><i class="fa fa-angle-double-right"></i> Data Bank</a></li>
          </ul>
-      </li>	
-<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user fa-fw"></i>Hello, <?=$_SESSION[nama]?><b class="caret"></b></a>
+      </li>  
+<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user fa-fw"></i>Hello, <?=$_SESSION['nama']?><b class="caret"></b></a>
 <ul class="dropdown-menu">
 <li><a href="../" target="_blank"><i class="fa fa-external-link-square fa-fw"></i> Go Website</a></li>
 <li><a href="?aksi=admin"><i class="fa fa-user fa-fw"></i> Data admin</a></li>
-<li><a href="?aksi=editadmin&id=<?= $_SESSION[kode] ?>"><i class="fa fa-gear fa-fw"></i> Settings</a></li>
+<li><a href="?aksi=editadmin&id=<?= $_SESSION['kode'] ?>"><i class="fa fa-gear fa-fw"></i> Settings</a></li>
 <li><a href="?aksi=komentar"><i class="fa fa-comments-o fa-fw"></i>Komentar Produk</a></li>
 <li><a href="?aksi=pesan"><i class="fa fa-comments-o"></i>Testimonial </a></li>
 <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i> Keluar</a></li>
@@ -121,12 +121,12 @@ while($p=mysql_fetch_array($profil)){?>
 
 <div class="panel panel-success">
   <div class="panel-body">
-    <?	include "tengah.php"; ?>
+    <?php include "tengah.php"; ?>
   </div>
-</div>						
+</div>                     
 </body>
 </html>
-<?
+<?php
 }
 }
 ?>

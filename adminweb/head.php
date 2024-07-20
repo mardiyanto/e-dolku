@@ -51,7 +51,7 @@
                     <ul class="dropdown-menu dropdown-user">
                         <li><a href="?aksi=admin"><i class="fa fa-user fa-fw"></i> Data admin</a>
                         </li>
-                        <li><a href="?aksi=editadmin&id=<?= $_SESSION[kode] ?>"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        <li><a href="?aksi=editadmin&id=<?= $_SESSION['kode'] ?>"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
 						<li><a href="../" target="_blank"><i class="fa fa-external-link-square fa-fw"></i> Go Website</a>
@@ -65,5 +65,5 @@
             </ul>
             <!-- /.navbar-top-links -->
 
-            <? include"menu.php" ?>
+            <?php include "menu.php"; ?>
         </nav>

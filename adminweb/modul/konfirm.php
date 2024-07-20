@@ -1,9 +1,9 @@
-
 <?php
 include "../../config/koneksi.php";
 
-mysql_query("DELETE FROM konfirmasi WHERE id_konfrim='$_GET[id_k]'"); 
-echo "<script>window.location=('../index.php?aksi=konfirmasi')</script>";
-
-
-?>
+if (isset($_GET['id_k'])) {
+    $id_k = $_GET['id_k'];
+    $query = "DELETE FROM konfirmasi WHERE id_konfrim='$id_k'";
+    mysqli_query($koneksi, $query);
+    echo "<script>window.location=('../index.php?aksi=konfirmasi')</script>";
+}

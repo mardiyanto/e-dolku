@@ -1,21 +1,21 @@
 <?php
 include "../../config/koneksi.php";
-$act=$_GET[act];
-$date=date ('d/m/Y');
-$time=date ('h:i A');
-$diskon=$_POST[diskon];
+$act=$_GET['act'];
+$date=date('d/m/Y');
+$time=date('h:i A');
+$diskon=$_POST['diskon'];
 if($act=='input'){
-if (empty($_POST[nama]) || empty($_POST[harga]) || empty($_POST[ket]) || empty($_POST[stok])){
+if (empty($_POST['nama']) || empty($_POST['harga']) || empty($_POST['ket']) || empty($_POST['stok'])){
  echo "<script>window.alert('Data yang Anda isikan belum lengkap');
         window.location=('javascript:history.go(-1)')</script>";
      }
 
-elseif ($_POST[kat]=='null'){
+elseif ($_POST['kat']=='null'){
   echo "<script>window.alert('Kategori Belum dipilih');
         window.location=('javascript:history.go(-1)')</script>";
 	}
 
-elseif (!ereg("[0-9]","$_POST[harga]")){
+elseif (!preg_match("/[0-9]/",$_POST['harga'])){
 echo "<script>window.alert('Harga hanya dapat disi dengan angka');
         window.location=('javascript:history.go(-1)')</script>";
 
@@ -26,14 +26,14 @@ echo "<script>window.alert('diskon tidak bisa lebih dari 100');
 
 }
 
-elseif (!ereg("[0-9]","$_POST[stok]")){
+elseif (!preg_match("/[0-9]/",$_POST['stok'])){
 echo "<script>window.alert('stok hanya dapat disi dengan angka');
         window.location=('javascript:history.go(-1)')</script>";
 
 }
 else{
 	
-$lokasi_file=$_FILES[gambar][tmp_name];
+$lokasi_file=$_FILES['gambar']['tmp_name'];
 if(empty($lokasi_file)){
 echo "<script>window.alert('Masukan Gambar Produk');
         window.location=('javascript:history.go(-1)')</script>";
@@ -42,7 +42,7 @@ $tanggal=date("dmYhis");
 $file=$_FILES['gambar']['tmp_name'];
 $file_name=$_FILES['gambar']['name'];
 copy($file,"../../foto/foto_produk/".$tanggal.".jpg");
-mysql_query("insert into produk (id_kategori,
+mysqli_query($koneksi,"insert into produk (id_kategori,
 											
 											nama_produk,
 											harga,
@@ -73,17 +73,17 @@ echo "<script>window.location=('../index.php?aksi=barang')</script>";
 }
 
 elseif($act=='edit'){
-if (empty($_POST[nama]) || empty($_POST[harga]) || empty($_POST[ket]) || empty($_POST[stok])){
+if (empty($_POST['nama']) || empty($_POST['harga']) || empty($_POST['ket']) || empty($_POST['stok'])){
  echo "<script>window.alert('Data yang Anda isikan belum lengkap');
         window.location=('javascript:history.go(-1)')</script>";
      }
 
-elseif ($_POST[kat]=='null'){
+elseif ($_POST['kat']=='null'){
   echo "<script>window.alert('Kategori Belum dipilih');
         window.location=('javascript:history.go(-1)')</script>";
 	}
 
-elseif (!ereg("[0-9]","$_POST[harga]")){
+elseif (!preg_match("/[0-9]/",$_POST['harga'])){
 echo "<script>window.alert('Harga hanya dapat disi dengan angka');
         window.location=('javascript:history.go(-1)')</script>";
 
@@ -94,15 +94,15 @@ echo "<script>window.alert('diskon tidak bisa lebih dari 100');
 
 }
 
-elseif (!ereg("[0-9]","$_POST[stok]")){
+elseif (!preg_match("/[0-9]/",$_POST['stok'])){
 echo "<script>window.alert('stok hanya dapat disi dengan angka');
         window.location=('javascript:history.go(-1)')</script>";
 
 }else{
 	
-$lokasi_file=$_FILES[gambar][tmp_name];
+$lokasi_file=$_FILES['gambar']['tmp_name'];
 if(empty($lokasi_file)){
-mysql_query("UPDATE produk SET id_kategori='$_POST[kat]',
+mysqli_query($koneksi,"UPDATE produk SET id_kategori='$_POST[kat]',
 											
 											nama_produk='$_POST[nama]',
 											harga='$_POST[harga]',
@@ -117,12 +117,12 @@ mysql_query("UPDATE produk SET id_kategori='$_POST[kat]',
    
 echo "<script>window.location=('../index.php?aksi=barang')</script>";
 }else{
-if($_GET[gb]==''){
+if($_GET['gb']==''){
 $tanggal=date("dmYhis");
 $file=$_FILES['gambar']['tmp_name'];
 $file_name=$_FILES['gambar']['name'];
 copy($file,"../../foto/foto_produk/".$tanggal.".jpg");
-mysql_query("UPDATE produk SET id_kategori='$_POST[kat]',
+mysqli_query($koneksi,"UPDATE produk SET id_kategori='$_POST[kat]',
 											
 											nama_produk='$_POST[nama]',
 											harga='$_POST[harga]',
@@ -144,7 +144,7 @@ $a=$_GET['gb'];
 $file=$_FILES['gambar']['tmp_name'];
 $file_name=$_FILES['gambar']['name'];
 copy($file,"../../foto/foto_produk/".$a);
-mysql_query("UPDATE produk SET id_kategori='$_POST[kat]',
+mysqli_query($koneksi,"UPDATE produk SET id_kategori='$_POST[kat]',
 										
 											nama_produk='$_POST[nama]',
 											harga='$_POST[harga]',
@@ -164,7 +164,7 @@ echo "<script>window.location=('../index.php?aksi=barang')</script>";
 }
 
 elseif($act=='hapus'){
-mysql_query("DELETE FROM produk WHERE id_produk='$_GET[id_b]'");
+mysqli_query($koneksi,"DELETE FROM produk WHERE id_produk='$_GET[id_b]'");
 $b=$_GET['gbr'];
 $pathFile="../../foto/foto_produk/$b";	   
 unlink($pathFile);

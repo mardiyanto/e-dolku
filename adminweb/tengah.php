@@ -1,4 +1,5 @@
-<?
+<?php
+    include "../config/koneksi.php";
 
 ///////////////////////////lihat/////////////////////////////////////////////
 if($aksi=='home'){
@@ -67,8 +68,8 @@ echo"
 								<tr><td >Nomer Order</td><td>Status</td></tr>
 								";
 								
-$order=mysql_query(" SELECT * FROM orders,kustomer WHERE orders.id_kustomer=kustomer.id_kustomer ORDER BY orders.id_orders DESC limit 4 ");
-while ($t=mysql_fetch_array($order)){
+$order=mysqli_query($koneksi, "SELECT * FROM orders,kustomer WHERE orders.id_kustomer=kustomer.id_kustomer ORDER BY orders.id_orders DESC limit 4");
+while ($t=mysqli_fetch_array($order)){
 echo"
 <tr><td >$t[id_orders]</td><td><span class='badge bg-yellow'>$t[status_order]</span></td></tr>";
 									}
@@ -138,10 +139,9 @@ echo"<div class='row'>
 					    </tr>
 					</thead>
 					<tbody>";
-$tebaru=mysql_query(" SELECT * FROM produk,kategori where produk.id_kategori=kategori.id_kategori  ORDER BY id_produk DESC ");
-
-while ($t=mysql_fetch_array($tebaru)){
-$harga2 = number_format($t[harga],0,',','.');
+$tebaru=mysqli_query($koneksi, "SELECT * FROM produk,kategori where produk.id_kategori=kategori.id_kategori  ORDER BY id_produk DESC");
+while ($t=mysqli_fetch_array($tebaru)){
+$harga2 = number_format($t['harga'],0,',','.');
 $no++;
 
 					   echo"<tr>
@@ -157,7 +157,7 @@ $no++;
                                             <button type='button' class='btn btn-info'>Action</button>
                                             <button type='button' class='btn btn-info dropdown-toggle' data-toggle='dropdown'>
                                                 <span class='caret'></span>
-                                                <span class='sr-only'>Toggle Dropdown</span>
+                                                <span the='sr-only'>Toggle Dropdown</span>
                                             </button>
                                             <ul class='dropdown-menu' role='menu'>
                                                 <li><a href='?aksi=editbarang&id_b=$t[id_produk]'>Edit</a></li>
@@ -201,8 +201,8 @@ Input Barang
         <label>Kategori</label>
 		    <select class='form-control' name='kat'>
         	<option value='null' selected>----- Pilih Kategori -----</option>";
-            $tampil=mysql_query("SELECT * FROM kategori ORDER BY nama_kategori");
-            while($r=mysql_fetch_array($tampil)){
+            $tampil=mysqli_query($koneksi, "SELECT * FROM kategori ORDER BY nama_kategori");
+            while($r=mysqli_fetch_array($tampil)){
               echo "<option value=$r[id_kategori]>$r[nama_kategori]</option>";
             }
               
@@ -261,8 +261,8 @@ Input Barang
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 elseif($aksi=='editbarang'){
-$tebaru=mysql_query(" SELECT * FROM produk  WHERE id_produk='$_GET[id_b]'");
-$t=mysql_fetch_array($tebaru);
+$tebaru=mysqli_query($koneksi, "SELECT * FROM produk  WHERE id_produk='$_GET[id_b]'");
+$t=mysqli_fetch_array($tebaru);
 echo"
 <div class='row'>
                 	<div class='col-lg-12'>
@@ -284,12 +284,12 @@ Input Barang
 <form name='form2' id='form_combo' role='form' enctype='multipart/form-data' method='post' action='modul/barang.php?act=edit&id_b=$t[id_produk]&gb=$t[gambar]'>
         <label>Kategori</label>
 		    <select class='form-control' name='kat' >";
-      $tampil=mysql_query("SELECT * FROM kategori ORDER BY nama_kategori");
+      $tampil=mysqli_query($koneksi, "SELECT * FROM kategori ORDER BY nama_kategori");
           if ($t[id_kategori]==0){
             echo "<option value='null' selected>- Pilih Kategori -</option>";
           }   
 
-          while($w=mysql_fetch_array($tampil)){
+          while($w=mysqli_fetch_array($tampil)){
             if ($t[id_kategori]==$w[id_kategori]){
               echo "<option value=$w[id_kategori] selected>$w[nama_kategori]</option>";
             }
@@ -372,8 +372,8 @@ Data Kategori
                                 <div class='panel-body'>";
 	
 if($_GET[kat]=='edit'){
-$detail=mysql_query(" SELECT * FROM kategori WHERE id_kategori='$_GET[id_k]'");
-$d=mysql_fetch_array($detail); 
+$detail=mysqli_query($koneksi, "SELECT * FROM kategori WHERE id_kategori='$_GET[id_k]'");
+$d=mysqli_fetch_array($detail); 
 echo"
 <form  method='post' action='modul/kategori.php?act=editkategori&id_k=$d[id_kategori]'>
 <label>
@@ -404,8 +404,8 @@ echo"
 					    </tr>
 					</thead>
 					<tbody>";
-$kategori=mysql_query("SELECT COUNT(produk.id_produk) as jlh,kategori.id_kategori,kategori.nama_kategori FROM kategori LEFT JOIN produk ON produk.id_kategori = kategori.id_kategori GROUP BY kategori.id_kategori ORDER BY id_kategori DESC");
-while ($d=mysql_fetch_array($kategori)){
+$kategori=mysqli_query($koneksi, "SELECT COUNT(produk.id_produk) as jlh,kategori.id_kategori,kategori.nama_kategori FROM kategori LEFT JOIN produk ON produk.id_kategori = kategori.id_kategori GROUP BY kategori.id_kategori ORDER BY id_kategori DESC");
+while ($d=mysqli_fetch_array($kategori)){
 $no++;
 
 					   echo"<tr class='gradeA' >
@@ -452,27 +452,27 @@ Data Kategori
                         <div class='col-md-6'>
                             <div class='panel panel-default'>
                                 <div class='panel-heading'>";
-									if($_GET[kat]=='edit'){ echo"Form Edit Sub Kategori Barang";}
+									if(isset($_GET['kat']) && $_GET['kat']=='edit'){ echo"Form Edit Sub Kategori Barang";}
 									else{echo"Form Input Sub Kategori Barang";}
                                  echo"</div>
                                 
                                 <div class='panel-body'>"; 
-if($_GET[kat]=='edit'){
-$detail=mysql_query(" SELECT * FROM tipe left join kategori on tipe.id_kategori=kategori.id_kategori WHERE id_tipe='$_GET[id_t]'");
-$d=mysql_fetch_array($detail); 
+if(isset($_GET['kat']) && $_GET['kat']=='edit'){
+$detail=mysqli_query($koneksi, "SELECT * FROM tipe LEFT JOIN kategori ON tipe.id_kategori=kategori.id_kategori WHERE id_tipe='" . $_GET['id_t'] . "'");
+$d=mysqli_fetch_assoc($detail); 
 echo"
-<form  method='post' action='modul/subkategori.php?act=edit&id_t=$d[id_tipe]'>
+<form  method='post' action='modul/subkategori.php?act=edit&id_t=" . $d['id_tipe'] . "'>
 <label>Kategori</label>
 		    <select class='form-control' name='kat' >
-        	<option value=$d[id_kategori] selected>$d[nama_kategori]</option>";
-            $tampil=mysql_query("SELECT * FROM kategori where id_kategori!=$d[id_kategori] ORDER BY nama_kategori");
-            while($r=mysql_fetch_array($tampil)){
-              echo "<option value=$r[id_kategori]>$r[nama_kategori]</option>";
+        	<option value=" . $d['id_kategori'] . " selected>" . $d['nama_kategori'] . "</option>";
+            $tampil=mysqli_query($koneksi, "SELECT * FROM kategori WHERE id_kategori!=" . $d['id_kategori'] . " ORDER BY nama_kategori");
+            while($r=mysqli_fetch_assoc($tampil)){
+              echo "<option value=" . $r['id_kategori'] . ">" . $r['nama_kategori'] . "</option>";
             }
               
         echo "</select><br>
 <label>Sub Kategori </label>
-        <input type='text' class='form-control' value='$d[genre]'  name='genre'/><br>
+        <input type='text' class='form-control' value='" . $d['genre'] . "'  name='genre'/><br>
 
           </label> <label>
             <button class='btn btn-primary btn-sm' type='submit'>Simpan Ulang</button>
@@ -484,9 +484,9 @@ echo"
 <label>Kategori</label>
 		    <select class='form-control' name='kat'>
         	<option value=0 selected>-----Pilih Kategori------</option>";
-      $tampil=mysql_query("SELECT * FROM kategori ORDER BY nama_kategori");
-            while($r=mysql_fetch_array($tampil)){
-              echo "<option value=$r[id_kategori]>$r[nama_kategori]</option>";
+      $tampil=mysqli_query($koneksi, "SELECT * FROM kategori ORDER BY nama_kategori");
+            while($r=mysqli_fetch_assoc($tampil)){
+              echo "<option value=" . $r['id_kategori'] . ">" . $r['nama_kategori'] . "</option>";
             }
               
         echo "</select><br>
@@ -520,16 +520,16 @@ echo" </div></div></div></div>
 					    </tr>
 					</thead>
 					<tbody>";
-$kategori=mysql_query("select tipe.id_kategori, kategori.id_kategori, kategori.nama_kategori, tipe.genre, tipe.id_tipe,
-			count(produk.id_produk) as jml from (tipe left join produk on tipe.id_tipe=produk.id_tipe) left join kategori on tipe.id_kategori=kategori.id_kategori group by id_tipe  order by nama_kategori ASC");
-while ($r=mysql_fetch_array($kategori)){
+$kategori=mysqli_query($koneksi, "SELECT tipe.id_kategori, kategori.id_kategori, kategori.nama_kategori, tipe.genre, tipe.id_tipe,
+			COUNT(produk.id_produk) as jml FROM (tipe LEFT JOIN produk ON tipe.id_tipe=produk.id_tipe) LEFT JOIN kategori ON tipe.id_kategori=kategori.id_kategori GROUP BY id_tipe  ORDER BY nama_kategori ASC");
+while ($r=mysqli_fetch_assoc($kategori)){
 $no++;
 
 					   echo"<tr class='gradeA' >
 					        <td align=center >$no</td>
-							<td>$r[genre]</td>
-							<td><strong>$r[nama_kategori]</strong></td>
-							<td >$r[jml]</td>
+							<td>" . $r['genre'] . "</td>
+							<td><strong>" . $r['nama_kategori'] . "</strong></td>
+							<td >" . $r['jml'] . "</td>
 							<td class='options-width3'  >
 									<div class='btn-group'>
                                             <button type='button' class='btn btn-info'>Action</button>
@@ -538,9 +538,9 @@ $no++;
                                                 <span class='sr-only'>Toggle Dropdown</span>
                                             </button>
                                             <ul class='dropdown-menu' role='menu'>
-                                                <li><a href='index.php?aksi=subkategori&id_t=$r[id_tipe]&kat=edit'>Edit</a></li>";
-                                                if($d[jml]==0){
-				echo"<li><a href='modul/subkategori.php?id_t=$r[id_tipe]&act=hapus' 			                  onclick=\"return confirm ('Apakah yakin ingin menghapus $d[kategori] ?')\" >Hapus</a></li>";
+                                                <li><a href='index.php?aksi=subkategori&id_t=" . $r['id_tipe'] . "&kat=edit'>Edit</a></li>";
+                                                if($r['jml']==0){
+				echo"<li><a href='modul/subkategori.php?id_t=" . $r['id_tipe'] . "&act=hapus' onclick=\"return confirm ('Apakah yakin ingin menghapus " . $r['genre'] . " ?')\" >Hapus</a></li>";
 				}else{
 				echo"
 				<li><a>Tidak Bisa Di Hapus</a></li>
@@ -563,13 +563,13 @@ $no++;
 }
 
 elseif($aksi=='editprofil'){
-$tebaru=mysql_query(" SELECT * FROM profil WHERE id_profil=$_GET[id_p] ");
-$t=mysql_fetch_array($tebaru);
+$tebaru=mysqli_query($koneksi, "SELECT * FROM profil WHERE id_profil=" . $_GET['id_p'] . " ");
+$t=mysqli_fetch_assoc($tebaru);
 echo"
 <div class='row'>
                 	<div class='col-lg-12'>
 <h1 class='page-header'>
-Edit $t[nama]
+Edit " . $t['nama'] . "
                     </h1>
 	
 
@@ -584,11 +584,11 @@ Edit $t[nama]
                                 <div class='panel-body'>
 	
 
-<form id='edit' enctype='multipart/form-data' method='post' action='modul/profil.php?act=editpro&id_p=$_GET[id_p]&jd=$t[nama]'>
+<form id='edit' enctype='multipart/form-data' method='post' action='modul/profil.php?act=editpro&id_p=" . $_GET['id_p'] . "&jd=" . $t['nama'] . "'>
         <label>Judul</label>
-        <input type='text' class='form-control' value='$t[nama]' name='jd' /><br>
+        <input type='text' class='form-control' value='" . $t['nama'] . "' name='jd' /><br>
 		<label>Isi</label>
-        <textarea  id='tinymce_basic'  name='isi' class='smallInput wide' rows='7' cols='30'>$t[isi]</textarea><script>
+        <textarea  id='tinymce_basic'  name='isi' class='smallInput wide' rows='7' cols='30'>" . $t['isi'] . "</textarea><script>
 
 			CKEDITOR.replace( 'tinymce_basic', {
 				fullPage: true,
@@ -617,17 +617,17 @@ Testimonial
 
 
 ";
-if($_GET[lihat]=='v'){
+if($_GET['lihat']=='v'){
 
-	$agenda2=mysql_query(" SELECT * FROM komentar WHERE id_komentar='$_GET[id_bk]'");
-	$d2=mysql_fetch_array($agenda2); 
+	$agenda2=mysqli_query($koneksi, "SELECT * FROM komentar WHERE id_komentar='" . $_GET['id_bk'] . "'");
+	$d2=mysqli_fetch_assoc($agenda2); 
 	$komen=wordwrap($d2['isi_komentar'], 50, "<br />\n", 1);
 
-if($d2[status]=='N'){
-				echo"<a href='modul/bukutamu.php?act=status&id_bk=$d2[id_komentar]' title='publikasikan' class='ok' > 
+if($d2['status']=='N'){
+				echo"<a href='modul/bukutamu.php?act=status&id_bk=" . $d2['id_komentar'] . "' title='publikasikan' class='ok' > 
 				<button class='btn btn-primary btn-sm'>Publikasikan</button></a><br />
 ";
-				}else{echo"<a href='modul/bukutamu.php?act=status&id_bk=$d2[id_komentar]&beku=beku' title='jangan publikasikan' class='ok'><button class='btn btn-danger btn-sm'>Jangan Publikasikan</button></a><br />";
+				}else{echo"<a href='modul/bukutamu.php?act=status&id_bk=" . $d2['id_komentar'] . "&beku=beku' title='jangan publikasikan' class='ok'><button class='btn btn-danger btn-sm'>Jangan Publikasikan</button></a><br />";
 				}
 
 echo" <br />
@@ -693,8 +693,8 @@ echo"<div class='row'>
 					    </tr>
 					</thead>
 					<tbody>";
-$tebaru=mysql_query(" SELECT * FROM komentar ORDER BY id_komentar DESC");
-while ($t=mysql_fetch_array($tebaru)){		
+$tebaru=mysqli_query($koneksi, "SELECT * FROM komentar ORDER BY id_komentar DESC");
+while ($t=mysqli_fetch_assoc($tebaru)){		
                 $isi=substr($t['isi_komentar'], 0, 50); 
                 $isi_berita = strip_tags($isi); 
 				$komen=wordwrap($isi, 20, "<br />\n", 1);
@@ -706,11 +706,11 @@ $no++;
 							<td  >$komen</td>
 							<td align=center >$t[tgl]</td>
 							<td align=center >";
-				if($t[status]=='N'){
-				echo"<a href='modul/bukutamu.php?act=status&id_bk=$t[id_komentar]' title='publikasikan'> 
+				if($t['status']=='N'){
+				echo"<a href='modul/bukutamu.php?act=status&id_bk=" . $t['id_komentar'] . "' title='publikasikan'> 
 				<button type='button' class='btn btn-danger btn-circle'><i class='fa fa-times'></i>
                             </button></a>";
-				}else{echo"<a href='modul/bukutamu.php?act=status&id_bk=$t[id_komentar]&beku=beku' title='jangan publikasikan'> 
+				}else{echo"<a href='modul/bukutamu.php?act=status&id_bk=" . $t['id_komentar'] . "&beku=beku' title='jangan publikasikan'> 
 				<button type='button' class='btn btn-info btn-circle'><i class='fa fa-check'></i>
                             </button></a>";
 				}
@@ -752,7 +752,6 @@ Admin
 		<div class='table-responsive'>
 <table id='style1' class='table table-striped table-bordered table-hover'>
 					<thead>
-					<thead>
 						<tr>
 						    <th width=1% >No</th>
 							<th width=15% >Nama</th>
@@ -762,8 +761,8 @@ Admin
 					    </tr>
 					</thead>
 					<tbody>";
-$tebaru=mysql_query(" SELECT * FROM users ");
-while ($t=mysql_fetch_array($tebaru)){	
+$tebaru=mysqli_query($koneksi, "SELECT * FROM users");
+while ($t=mysqli_fetch_assoc($tebaru)){	
 $no++;
 
 					   echo"<tr class='gradeA' >
@@ -825,8 +824,8 @@ Input Admin
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 elseif($aksi=='editadmin'){
-$tebaru=mysql_query(" SELECT * FROM users WHERE id=$_GET[id]");
-$t=mysql_fetch_array($tebaru);
+$tebaru=mysqli_query($koneksi, "SELECT * FROM users WHERE id=$_GET[id]");
+$t=mysqli_fetch_assoc($tebaru);
 echo"<div class='row'>
                 	<div class='col-lg-12'>
 <h1 class='page-header'>
@@ -892,24 +891,24 @@ Kustomer              </h1>
 					    </tr>
 					</thead>
 					<tbody>";
-$tebaru=mysql_query(" SELECT * FROM kustomer  ORDER BY kustomer.id_kustomer DESC ");
-while ($t=mysql_fetch_array($tebaru)){
+$tebaru=mysqli_query($koneksi, "SELECT * FROM kustomer ORDER BY id_kustomer DESC");
+while ($t=mysqli_fetch_assoc($tebaru)){
 $no++;
-                $isi_berita1 = strip_tags($t[alamat]); 
+                $isi_berita1 = strip_tags($t['alamat']); 
           
 					   echo"<tr class='gradeA' >
 					       <td>$no</td>
-							<td>$t[nama_lengkap]</td>
-							<td  >$t[email]</td>
-							<td  >$isi_berita1</td>
-							<td  >$t[telpon]</td>
+							<td>".$t['nama_lengkap']."</td>
+							<td>".$t['email']."</td>
+							<td>".$isi_berita1."</td>
+							<td>".$t['telpon']."</td>
 							
-							<td >$t[tgl]</td>
+							<td>".$t['tgl']."</td>
 
 							<td class='options-width3'  >
 					<center>
 												
-				<a href='modul/member.php?id_ks=$t[id_kustomer]&act=hapus' onclick=\"return confirm ('Apakah yakin ingin menghapus $t[nama_lengkap] ?')\" title='Hapus'><button type='button' class='btn btn-danger btn-circle'><i class='fa fa-times'></i>
+				<a href='modul/member.php?id_ks=".$t['id_kustomer']."&act=hapus' onclick=\"return confirm ('Apakah yakin ingin menghapus ".$t['nama_lengkap']." ?')\" title='Hapus'><button type='button' class='btn btn-danger btn-circle'><i class='fa fa-times'></i>
                             </button></a>
 				</center>
 					    </td></tr>";
@@ -926,9 +925,9 @@ echo"
 Data Kota              </h1>
 	";
 	
-if($_GET[kot]=='edit'){
-$detail=mysql_query(" SELECT * FROM kota WHERE id_kota='$_GET[id_k]'");
-$d=mysql_fetch_array($detail); 
+if($_GET['kot']=='edit'){
+$detail=mysqli_query($koneksi, "SELECT * FROM kota WHERE id_kota='".$_GET['id_k']."'");
+$d=mysqli_fetch_assoc($detail); 
 echo"
 <div class='row'>
                        
@@ -939,18 +938,18 @@ echo"
                                  </div>
                                 
                                 <div class='panel-body'> 
-<form  method='post' action='modul/kota.php?act=editkota&id_k=$d[id_kota]'>
+<form  method='post' action='modul/kota.php?act=editkota&id_k=".$d['id_kota']."'>
 <p>
 <label>Provinsi</label>
-<input name='prov' type='text' size='50' value='$d[kabupaten]' class='form-control'>
+<input name='prov' type='text' size='50' value='".$d['kabupaten']."' class='form-control'>
 </p>
 <p>
 <label>Kota Pengiriman</label>
-<input name='kot' type='text' size='50' value='$d[nama_kota]' class='form-control'>
+<input name='kot' type='text' size='50' value='".$d['nama_kota']."' class='form-control'>
 </p>
 <p>
 <label>Harga Pengiriman</label>
-<input name='ok' type='text' size='50' value='$d[ongkos_kirim]' class='form-control' onkeyup=\"this.value=this.value.replace(/[^0-9]/g,'')\" >
+<input name='ok' type='text' size='50' value='".$d['ongkos_kirim']."' class='form-control' onkeyup=\"this.value=this.value.replace(/[^0-9]/g,'')\" >
 </p>
 
 <button class='btn btn-primary btn-sm' type='submit'>Simpan</button>
@@ -1007,23 +1006,20 @@ echo"<div class='row'>
 					    </tr>
 					</thead>
 					<tbody>";
-					$p= new Paging;
-	$batas=100;
-	$posisi=$p->cariposisi($batas);
-$kategori=mysql_query("SELECT  * FROM kota ORDER BY id_kota DESC limit $posisi,$batas ");
-$no=$posisi+1;
-while ($d=mysql_fetch_array($kategori)){
+$kategori=mysqli_query($koneksi, "SELECT * FROM kota ORDER BY id_kota DESC");
+$no=1;
+while ($d=mysqli_fetch_assoc($kategori)){
 
 
 					   echo"<tr class='gradeA' >
 					        <td align=center >$no</td>
-							<td>$d[kabupaten]</td>
-							<td>$d[nama_kota]</td>
-							<td >$d[ongkos_kirim]</td>
+							<td>".$d['kabupaten']."</td>
+							<td>".$d['nama_kota']."</td>
+							<td >".$d['ongkos_kirim']."</td>
 							<td class='options-width3'  >
 									<center>
-				<a href='index.php?aksi=kota&id_k=$d[id_kota]&kot=edit' title='Edit'><button type='button' class='btn btn-info btn-circle'><i class='fa fa-pencil'></i>
-                            </button></a>&nbsp;&nbsp;<a href='modul/kota.php?id_k=$d[id_kota]&act=hapus' onclick=\"return confirm ('Apakah yakin ingin menghapus $d[nama_kota] ?')\" title='Hapus'><button type='button' class='btn btn-danger btn-circle'><i class='fa fa-times'></i>
+				<a href='index.php?aksi=kota&id_k=".$d['id_kota']."&kot=edit' title='Edit'><button type='button' class='btn btn-info btn-circle'><i class='fa fa-pencil'></i>
+                            </button></a>&nbsp;&nbsp;<a href='modul/kota.php?id_k=".$d['id_kota']."&act=hapus' onclick=\"return confirm ('Apakah yakin ingin menghapus ".$d['nama_kota']." ?')\" title='Hapus'><button type='button' class='btn btn-danger btn-circle'><i class='fa fa-times'></i>
                             </button></a>";
 				echo"</center>
 					</td></tr>";
@@ -1065,15 +1061,15 @@ Data Orders              </h1>
 					<tbody>";
 		
 					
-$tebaru=mysql_query(" SELECT * FROM orders,kustomer WHERE orders.id_kustomer=kustomer.id_kustomer ORDER BY orders.id_orders DESC ");
-while ($t=mysql_fetch_array($tebaru)){
+$tebaru=mysqli_query($koneksi, "SELECT * FROM orders INNER JOIN kustomer ON orders.id_kustomer=kustomer.id_kustomer ORDER BY orders.id_orders DESC");
+while ($t=mysqli_fetch_assoc($tebaru)){
 $no++;
                 $isi_berita1 = strip_tags($t['deskripsi']); 
                 $isi1 = substr($isi_berita1,0,70); 
                 $isi1 = substr($isi_berita1,0,strrpos($isi1," ")); 
-                $harga2 = number_format($t[harga],0,',','.');
-                if($t[status_order]=='Baru'){$ds="gradeX";}
-				elseif($t[status_order]=='Batal'){$ds="";}
+                $harga2 = number_format($t['harga'],0,',','.');
+                if($t['status_order']=='Baru'){$ds="gradeX";}
+				elseif($t['status_order']=='Batal'){$ds="";}
 				else{$ds="gradeA";}
 				
 				
@@ -1098,19 +1094,19 @@ $no++;
 }
 
 elseif($aksi=='detailorder'){
-   $edit = mysql_query("SELECT * FROM orders,
+   $edit = mysqli_query($koneksi, "SELECT * FROM orders,
 									   kustomer,
 									   kota,
 									   bank
 									   WHERE kota.id_kota=orders.id_kota_o AND bank.id_bank=orders.id_bank_o AND orders.id_kustomer=kustomer.id_kustomer AND id_orders='$_GET[id]'");
 
-    $r    = mysql_fetch_array($edit);
-     $tanggal=$r[tgl_order];
+    $r    = mysqli_fetch_array($edit);
+     $tanggal=$r['tgl_order'];
     
-    if ($r[status_order]=='Baru'){
+    if ($r['status_order']=='Baru'){
         $pilihan_status = array('Baru', 'Lunas');
     }
-    elseif ($r[status_order]=='Lunas'){
+    elseif ($r['status_order']=='Lunas'){
         $pilihan_status = array('Lunas', 'Batal');    
     }
     else{
@@ -1119,8 +1115,8 @@ elseif($aksi=='detailorder'){
 
     $pilihan_order = '';
     foreach ($pilihan_status as $status) {
-	   $pilihan_order .= "<option value=$status";
-	   if ($status == $r[status_order]) {
+	   $pilihan_order .= "<option value='$status'";
+	   if ($status == $r['status_order']) {
 		    $pilihan_order .= " selected";
 	   }
 	   $pilihan_order .= ">$status</option>\r\n";
@@ -1133,12 +1129,12 @@ elseif($aksi=='detailorder'){
 Data Orders              </h1>
  <a href='javascript:history.go(-1)' ><button type='button' class='btn btn-warning'>KEMBALI</button></a>
  ";
- $konfirmasi=mysql_query(" SELECT * FROM konfirmasi WHERE id_order_p=$r[id_orders]");
-$kn=mysql_fetch_array($konfirmasi);					
-					if($kn[status]=='Baru'){
+ $konfirmasi=mysqli_query($koneksi, " SELECT * FROM konfirmasi WHERE id_order_p=$r[id_orders]");
+$kn=mysqli_fetch_array($konfirmasi);					
+					if($kn['status']=='Baru'){
 						echo"<a href='?aksi=konorder&id=$r[id_orders]' class='btn btn-primary' type='button' value=''>Cek Pembayaran</a>";
 					} 
-					elseif($kn[status]=='Berhasil'){
+					elseif($kn['status']=='Berhasil'){
 						echo"<button class='btn btn-success' type='button' value=''>Pembayaran Selesai</button>";
 						} else{
 					echo"<button class='btn btn-warning' type='button' value=''>Pembeli Belum Bayar</button>";
@@ -1159,15 +1155,15 @@ $kn=mysql_fetch_array($konfirmasi);
                                 <div class='panel-body'> 	
 
 
-          <form method=POST action=modul/aksi_order.php?module=order&act=update>
-          <input type=hidden name=id value=$r[id_orders]>
+          <form method='POST' action='modul/aksi_order.php?module=order&act=update'>
+          <input type='hidden' name='id' value='$r[id_orders]'>
 
           <table id='style2' class='table table-striped table-bordered table-hover'>
           <tr><td>No. Order</td>        <td> : $r[id_orders]</td></tr>
           <tr><td>Tgl. & Jam Order</td> <td> : $tanggal & $r[jam_order]</td></tr>
 		  <tr><td>Keterangan Pengiriman</td> <td> : <textarea name='Ket' style='width: 260px; height: 150px;'>$r[Ket]</textarea></td></tr>
-          <tr><td>Status Order      </td><td>: <select name=status_order>$pilihan_order</select> 
-          <input type=submit value='Ubah Status'></td></tr>
+          <tr><td>Status Order      </td><td>: <select name='status_order'>$pilihan_order</select> 
+          <input type='submit' value='Ubah Status'></td></tr>
           </table></form>";
 
  // tampilkan data kustomer
@@ -1194,35 +1190,35 @@ $kn=mysql_fetch_array($konfirmasi);
 
 		";
   // tampilkan rincian barang yang di order
-  $sql2=mysql_query("SELECT * FROM orders_detail, produk 
+  $sql2=mysqli_query($koneksi, "SELECT * FROM orders_detail, produk 
                      WHERE orders_detail.id_produk=produk.id_produk 
                      AND orders_detail.id_orders='$_GET[id]'");
   
   echo "<table id='style3' class='table table-striped table-bordered table-hover'>
         <tr><th width='40%' >Nama barang</th><th width='15%'>Berat(kg)</th><th width='15%'>Jumlah</th><th width='15%'>Harga Satuan</th><th width='15%'>Sub Total</th></tr>";
   
-  while($s=mysql_fetch_array($sql2)){
+  while($s=mysqli_fetch_array($sql2)){
      // rumus untuk menghitung subtotal dan total		
-      $disc        = ($s[diskon]/100)*$s[harga];
-   $discmember  = (2/100)*$s[harga];
-   $hargadisc   = number_format(($s[harga]-$disc),0,",",".");
-   $subtotal    = ($s[harga]-$disc-$discmember) * $s[jumlah];
+      $disc        = ($s['diskon']/100)*$s['harga'];
+   $discmember  = (2/100)*$s['harga'];
+   $hargadisc   = number_format(($s['harga']-$disc),0,",",".");
+   $subtotal    = ($s['harga']-$disc-$discmember) * $s['jumlah'];
 
     $total       = $total + $subtotal;
     $subtotal_rp = format_rupiah($subtotal);    
     $total_rp    = format_rupiah($total);    
-    $harga       = format_rupiah($s[harga]);
+    $harga       = format_rupiah($s['harga']);
 
-   $subtotalberat = $s[berat] * $s[jumlah]; // total berat per item produk 
+   $subtotalberat = $s['berat'] * $s['jumlah']; // total berat per item produk 
    $totalberat  = $totalberat + $subtotalberat; // grand total berat all produk yang dibeli
 
     echo "<tr><td><strong>$s[nama_produk]</strong></td><td align=center>$s[berat]</td><td align=center>$s[jumlah]</td>
               <td align=left><strong>Rp.$harga</strong></td><td align='right'><strong>Rp.$subtotal_rp</strong></td></tr>";
   }
 
-  $ongkos=mysql_fetch_array(mysql_query("SELECT * FROM kota,kustomer,orders 
+  $ongkos=mysqli_fetch_array(mysqli_query($koneksi, "SELECT * FROM kota,kustomer,orders 
           WHERE kustomer.id_kota=kota.id_kota AND orders.id_kustomer=kustomer.id_kustomer AND id_orders='$_GET[id]'"));
-  $ongkoskirim1=$ongkos[ongkos_kirim];
+  $ongkoskirim1=$ongkos['ongkos_kirim'];
   $ongkoskirim=$ongkoskirim1 * $totalberat;
 
   $grandtotal    = $total + $ongkoskirim; 
@@ -1239,9 +1235,9 @@ echo "<tr><td colspan=4 align=right> jika member diskon 2% dari barang Total    
       </table>";
 
   // tampilkan data kustomer
- $konfirmasi=mysql_query(" SELECT * FROM konfirmasi WHERE id_order_p=$r[id_orders]");
-$kn=mysql_fetch_array($konfirmasi);					
-					if($kn[status]=='Baru'){
+ $konfirmasi=mysqli_query($koneksi, " SELECT * FROM konfirmasi WHERE id_order_p=$r[id_orders]");
+$kn=mysqli_fetch_array($konfirmasi);					
+					if($kn['status']=='Baru'){
 						echo"
 						<div class='row'>
                        
@@ -1263,7 +1259,7 @@ $kn=mysql_fetch_array($konfirmasi);
  
 </table><br /></div></div></div></div>";
 					} 
-					elseif($kn[status]=='Berhasil'){
+					elseif($kn['status']=='Berhasil'){
 						echo"						<div class='row'>
                        
                         <div class='col-md-12'>
@@ -1296,12 +1292,12 @@ echo"<div class='row'>
 <h1 class='page-header'>
 Konfirmasi Pembayaran
                     </h1>";
-	$agenda2=mysql_query(" SELECT * FROM konfirmasi WHERE id_order_p='$_GET[id]'");
-	$d2=mysql_fetch_array($agenda2); 
+	$agenda2=mysqli_query($koneksi, " SELECT * FROM konfirmasi WHERE id_order_p='$_GET[id]'");
+	$d2=mysqli_fetch_array($agenda2); 
 	$komen=wordwrap($d2['isi_komentar'], 50, "<br />\n", 1);
-	$tanggal=$d2[tgl_transfer];
+	$tanggal=$d2['tgl_transfer'];
 
-if($d2[status]=='Baru'){
+if($d2['status']=='Baru'){
 				echo"<a href='modul/kon.php?act=statusorder&id_bk=$d2[id_order_p]' title='konfirmasi' class='ok' > 
 				<button class='btn btn-primary btn-sm'>Setujui Pembayaran</button></a><br />
 ";
@@ -1402,8 +1398,8 @@ elseif($aksi=='konfirmasi'){
 					    </tr>
 					</thead>
 					<tbody>";
-$tebaru=mysql_query(" SELECT * FROM konfirmasi ORDER BY id_konfrim	DESC ");
-while ($t=mysql_fetch_array($tebaru)){
+$tebaru=mysqli_query($koneksi, " SELECT * FROM konfirmasi ORDER BY id_konfrim	DESC ");
+while ($t=mysqli_fetch_array($tebaru)){
 $no++;
 
 					   echo"<tr>
@@ -1437,11 +1433,11 @@ echo"<div class='row'>
 <h1 class='page-header'>
 Konfirmasi Pembayaran
                     </h1>";
-	$agenda2=mysql_query(" SELECT * FROM konfirmasi WHERE id_konfrim='$_GET[id]'");
-	$d2=mysql_fetch_array($agenda2); 
+	$agenda2=mysqli_query($koneksi, " SELECT * FROM konfirmasi WHERE id_konfrim='$_GET[id]'");
+	$d2=mysqli_fetch_array($agenda2); 
 	$komen=wordwrap($d2['isi_komentar'], 50, "<br />\n", 1);
 
-if($d2[status]=='Baru'){
+if($d2['status']=='Baru'){
 				echo"<a href='modul/kon.php?act=status&id_bk=$d2[id_konfrim]' title='konfirmasi' class='ok' > 
 				<button class='btn btn-primary btn-sm'>Konfirmasi Pembayaran</button></a><br />
 ";
@@ -1542,8 +1538,8 @@ echo"<div class='row'>
 					    </tr>
 					</thead>
 					<tbody>";
-$tebaru=mysql_query(" SELECT * FROM bank order by id_bank DESC ");
-while ($t=mysql_fetch_array($tebaru)){
+$tebaru=mysqli_query($koneksi, " SELECT * FROM bank order by id_bank DESC ");
+while ($t=mysqli_fetch_array($tebaru)){
 $no++;
 
 					   echo"<tr>
@@ -1626,8 +1622,8 @@ Input Bank Tranfer
 }
 
 elseif($aksi=='editbank'){
-$tebaru=mysql_query(" SELECT * FROM bank WHERE id_bank='$_GET[id_b]' ");
-$t=mysql_fetch_array($tebaru);
+$tebaru=mysqli_query($koneksi, " SELECT * FROM bank WHERE id_bank='$_GET[id_b]' ");
+$t=mysqli_fetch_array($tebaru);
 echo"
 <div class='row'>
                 	<div class='col-lg-12'>
@@ -1673,14 +1669,8 @@ Edit Bank Tranfer
 ";
 }
 
-
-
-
 else if($aksi=='pesan'){
-
-
-
-if($_GET[lihat]=='v'){
+if($_GET['lihat']=='v'){
 echo"
             <div class='inner'>
    <br>
@@ -1697,18 +1687,18 @@ echo"
 
 
 
- $judul= mysql_query("SELECT * FROM komentar,produk WHERE komentar.id_prod=produk.id_produk AND komentar.id_prod=$_GET[id]  ORDER BY id_komen ASC");
- $dg=mysql_fetch_array($judul);
+ $judul= mysqli_query($koneksi, "SELECT * FROM komentar,produk WHERE komentar.id_prod=produk.id_produk AND komentar.id_prod=$_GET[id]  ORDER BY id_komen ASC");
+ $dg=mysqli_fetch_array($judul);
  
- echo"<h3 class='col_w900 hr_divider'>Komentar di "; if($dg[id_prod]!=0){echo"<strong>$dg[judul]</strong>";}else{echo"<strong>Testimonial</strong>";}
+ echo"<h3 class='col_w900 hr_divider'>Komentar di "; if($dg['id_prod']!=0){echo"<strong>$dg[judul]</strong>";}else{echo"<strong>Testimonial</strong>";}
  
  
  echo"</h3>";
  
-	 $getComments = mysql_query("SELECT * FROM komentar WHERE id_prod=$_GET[id] AND jwb='0' ORDER BY id_komen ASC");
-    if(mysql_num_rows($getComments) > 0){
-        while($comments=mysql_fetch_array($getComments)){
-		$komen=wordwrap($comments[komentar], 80, "<br />\n", 1);
+	 $getComments = mysqli_query($koneksi, "SELECT * FROM komentar WHERE id_prod=$_GET[id] AND jwb='0' ORDER BY id_komen ASC");
+    if(mysqli_num_rows($getComments) > 0){
+        while($comments=mysqli_fetch_array($getComments)){
+		$komen=wordwrap($comments['komentar'], 80, "<br />\n", 1);
             echo "
 
 <div class='jr'>
@@ -1721,12 +1711,12 @@ $comments[email]<br />
 		<div class='clear'></div>
         </div></div>";
             
-            $getReplies = mysql_query("SELECT * FROM komentar WHERE  id_prod=$_GET[id] AND jwb='1' AND balas='$comments[id_komen]' ORDER BY id_komen ASC");
-            if(mysql_num_rows($getReplies) > 0){
-                while($replies = mysql_fetch_array($getReplies)){
-				$komen2=wordwrap($replies[komentar], 90, "<br />\n", 1);
+            $getReplies = mysqli_query($koneksi, "SELECT * FROM komentar WHERE  id_prod=$_GET[id] AND jwb='1' AND balas='$comments[id_komen]' ORDER BY id_komen ASC");
+            if(mysqli_num_rows($getReplies) > 0){
+                while($replies = mysqli_fetch_array($getReplies)){
+				$komen2=wordwrap($replies['komentar'], 90, "<br />\n", 1);
 				
-				if($replies[admin]=='Y'){
+				if($replies['admin']=='Y'){
 				echo"
 	<div class='jk'>
 <div class='nad'>$replies[nama]</div>
@@ -1797,8 +1787,8 @@ echo"<div class='row'>
 					    </tr>
 					</thead>
 					<tbody>";
-$tebaru=mysql_query(" SELECT * FROM komentar WHERE id_prod=0 ORDER BY id_komen DESC ");
-while ($t=mysql_fetch_array($tebaru)){
+$tebaru=mysqli_query($koneksi, " SELECT * FROM komentar WHERE id_prod=0 ORDER BY id_komen DESC ");
+while ($t=mysqli_fetch_array($tebaru)){
 $no++;
 
 					   echo"<tr>
@@ -1834,10 +1824,7 @@ $no++;
 }
 
 else if($aksi=='komentar'){
-
-
-
-if($_GET[lihat]=='v'){
+if($_GET['lihat']=='v'){
 echo"
             <div class='inner'>
    <br>
@@ -1854,18 +1841,18 @@ echo"
 
 
 
- $judul= mysql_query("SELECT * FROM komentar,produk WHERE komentar.id_prod=produk.id_produk AND komentar.id_prod=$_GET[id]  ORDER BY id_komen ASC");
- $dg=mysql_fetch_array($judul);
+ $judul= mysqli_query($koneksi, "SELECT * FROM komentar INNER JOIN produk ON komentar.id_prod=produk.id_produk WHERE komentar.id_prod=$_GET[id]  ORDER BY id_komen ASC");
+ $dg=mysqli_fetch_array($judul);
  
- echo"<h3 class='col_w900 hr_divider'>Komentar di "; if($dg[id_prod]!=0){echo"<strong>$dg[nama_produk]</strong>";}else{echo"<strong>Testimonial</strong>";}
+ echo"<h3 class='col_w900 hr_divider'>Komentar di "; if($dg['id_prod']!=0){echo"<strong>$dg[nama_produk]</strong>";}else{echo"<strong>Testimonial</strong>";}
  
  
  echo"</h3>";
  
-	 $getComments = mysql_query("SELECT * FROM komentar WHERE id_prod=$_GET[id] AND jwb='0' ORDER BY id_komen ASC");
-    if(mysql_num_rows($getComments) > 0){
-        while($comments=mysql_fetch_array($getComments)){
-		$komen=wordwrap($comments[komentar], 80, "<br />\n", 1);
+	 $getComments = mysqli_query($koneksi, "SELECT * FROM komentar WHERE id_prod=$_GET[id] AND jwb='0' ORDER BY id_komen ASC");
+    if(mysqli_num_rows($getComments) > 0){
+        while($comments=mysqli_fetch_array($getComments)){
+		$komen=wordwrap($comments['komentar'], 80, "<br />\n", 1);
             echo "
 
 <div class='jr'>
@@ -1878,12 +1865,12 @@ $comments[email]<br />
 		<div class='clear'></div>
         </div></div>";
             
-            $getReplies = mysql_query("SELECT * FROM komentar WHERE  id_prod=$_GET[id] AND jwb='1' AND balas='$comments[id_komen]' ORDER BY id_komen ASC");
-            if(mysql_num_rows($getReplies) > 0){
-                while($replies = mysql_fetch_array($getReplies)){
-				$komen2=wordwrap($replies[komentar], 90, "<br />\n", 1);
+            $getReplies = mysqli_query($koneksi, "SELECT * FROM komentar WHERE  id_prod=$_GET[id] AND jwb='1' AND balas='$comments[id_komen]' ORDER BY id_komen ASC");
+            if(mysqli_num_rows($getReplies) > 0){
+                while($replies = mysqli_fetch_array($getReplies)){
+				$komen2=wordwrap($replies['komentar'], 90, "<br />\n", 1);
 				
-				if($replies[admin]=='Y'){
+				if($replies['admin']=='Y'){
 				echo"
 	<div class='jk'>
 <div class='nad'>$replies[nama]</div>
@@ -1954,8 +1941,8 @@ echo"<div class='row'>
 					    </tr>
 					</thead>
 					<tbody>";
-$tebaru=mysql_query(" SELECT * FROM komentar WHERE id_prod!=0 ORDER BY id_komen DESC ");
-while ($t=mysql_fetch_array($tebaru)){
+$tebaru=mysqli_query($koneksi, " SELECT * FROM komentar WHERE id_prod!=0 ORDER BY id_komen DESC ");
+while ($t=mysqli_fetch_array($tebaru)){
 $no++;
 
 					   echo"<tr>
@@ -1992,8 +1979,8 @@ $no++;
 
 
 else if($aksi=='balas'){
-  $bls = mysql_query("SELECT * FROM komentar WHERE id_komen=$_GET[id_km]");
-      $bl=mysql_fetch_array($bls);	 
+  $bls = mysqli_query($koneksi, "SELECT * FROM komentar WHERE id_komen=$_GET[id_km]");
+      $bl=mysqli_fetch_array($bls);	 
 echo"  
 
 <div class='row'>
@@ -2102,8 +2089,8 @@ Data Informasi
 					</thead>
 					<tbody>";
 					
-$tebaru=mysql_query(" SELECT * FROM berita order by id_berita DESC ");
-while ($t=mysql_fetch_array($tebaru)){
+$tebaru=mysqli_query($koneksi, " SELECT * FROM berita order by id_berita DESC ");
+while ($t=mysqli_fetch_array($tebaru)){
 $no++;
 
 					   echo"<tr>
@@ -2190,8 +2177,8 @@ echo"
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 elseif($aksi=='editinfo'){
-$detail=mysql_query(" SELECT * FROM berita where id_berita='$_GET[id_b]' ");
-$d=mysql_fetch_array($detail); 
+$detail=mysqli_query($koneksi, " SELECT * FROM berita where id_berita='$_GET[id_b]' ");
+$d=mysqli_fetch_array($detail); 
 echo"
 <div class='row'>
                 	<div class='col-lg-12'>
@@ -2239,8 +2226,8 @@ echo"
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 elseif($aksi=='kontak'){
-$tebaru=mysql_query(" SELECT * FROM kontak order by id_kontak DESC");
-$t=mysql_fetch_array($tebaru);
+$tebaru=mysqli_query($koneksi, "SELECT * FROM kontak ORDER BY id_kontak DESC");
+$t=mysqli_fetch_array($tebaru);
 echo"
 <br />
 <br />
@@ -2322,8 +2309,8 @@ echo"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 elseif($aksi=='kontak_edit'){
-$tebaru=mysql_query(" SELECT * FROM kontak WHERE id_kontak=$_GET[id]");
-$t=mysql_fetch_array($tebaru);
+$tebaru=mysqli_query($koneksi, "SELECT * FROM kontak WHERE id_kontak=$_GET[id]");
+$t=mysqli_fetch_array($tebaru);
 
 echo"
 <div class='row'>
